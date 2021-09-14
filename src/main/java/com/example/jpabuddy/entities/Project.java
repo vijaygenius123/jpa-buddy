@@ -3,8 +3,11 @@ package com.example.jpabuddy.entities;
 import javax.persistence.*;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+import java.util.List;
 
-@Table(name = "project")
+@Table(name = "project", indexes = {
+        @Index(name = "idx_project_name", columnList = "name")
+})
 @Entity
 public class Project {
     @Id
@@ -22,6 +25,18 @@ public class Project {
     @ManyToOne(optional = false)
     @JoinColumn(name = "manager_id", nullable = false)
     private AppUser manager;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "project_id")
+    private List<Task> tasks;
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 
     public AppUser getManager() {
         return manager;
